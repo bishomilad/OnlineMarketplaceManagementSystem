@@ -25,7 +25,7 @@ void Console_Application::Run_Console_Application() {
 	Database db;
 	int IndexCustomer = 1;
 	int IndexSeller = -1;
-	//Cart cart;
+
 	string email, password, name;
 
 	/* retrieving the database from previous executions */
@@ -65,6 +65,7 @@ void Console_Application::Run_Console_Application() {
 						{
 							cout << "Insert name:\n";
 							cin >> prodname;
+							prodname[0] = toupper(prodname[0]);
 							Product::print_vector(db.Search_Products(prodname));
 
 						}
@@ -105,14 +106,18 @@ void Console_Application::Run_Console_Application() {
 						switch (order)
 						{
 						case 'a':
-							cout << "Write the product ID and rate it:\n";
+							cout << "Write the product ID and rate it (from 0 to 5):\n";
 							cin >> prdid >> rating;
+							if (rating > 5) {
+								rating = 5;
+							}
+
 							if (db.products[prdid - 1]->quantity > 0) {
-								db.customers[email].cart.add_Product(db.products[prdid - 1], rating);//4oof lw hn3ml el rating fe func lw7dha
-								cout << "Product " << db.products[prdid - 1]->name << "has been added to your cart.\n";
+								db.customers[email].cart.add_Product(db.products[prdid - 1], rating);
+								cout << "Product " << db.products[prdid - 1]->name << " has been added to your cart.\n";
 							}
 							else {
-								cout << "Not enough quantity of this product is available\n";
+								cout << "This product is out of stock.\n";
 							}
 							break;
 						case 'b':
@@ -166,7 +171,7 @@ void Console_Application::Run_Console_Application() {
 				cout << "Account created successfully. " << endl;
 				goback = true;
 			}
-			else { cout << "Wrong option."; goback = true; }
+			else { cout << "Wrong option. \n"; goback = true; }
 		}
 		else if (choice == 2) //seller
 		{
@@ -196,10 +201,15 @@ void Console_Application::Run_Console_Application() {
 						else if (choice == 2) {
 							cout << "Write your new product's name:\n";
 							cin >> prodname;
-							cout << "Write your new product's price:\n";
+							prodname[0] = toupper(prodname[0]);
+							cout << "Write your new product's price in LE:\n";
 							cin >> price;
 							cout << "Write your new product's category: (1: Medicines and Health 2:Food 3:Electronics 4:Toys 5:Digital Codes 6: Others)\n";
 							cin >> cat;
+							if (cat > 6) 
+							{
+								cat = 6;
+							}
 							cout << "How many products will you sell from this kind? \n";
 							cin >> quantity;
 							Product* prdct = new Product(cat, prodname, price, quantity, db.sellers[email].id);
@@ -207,7 +217,7 @@ void Console_Application::Run_Console_Application() {
 							cout << "Product " << prodname << " is available in the market now." << endl;
 						}
 						else if (choice == 3) {
-							cout << "Enter the id of the product you want to modify\n";
+							cout << "Enter the id of the product you want to modify:\n";
 							int id_to_modify;
 							cin >> id_to_modify;
 							id_to_modify -= 1; //to be an index for products vector
